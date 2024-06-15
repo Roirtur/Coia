@@ -12,12 +12,12 @@
         <router-link v-if="mapActive" to="/notes" class="navigation-container-button">
             Notes
         </router-link>
-        <router-link v-if="mapActive" to="/map" class="navigation-container-button">
+        <!-- <router-link v-if="mapActive" to="/map" class="navigation-container-button">
             World
-        </router-link>
-        <router-link v-if="marketActive" to="/market" class="navigation-container-button">
+        </router-link> -->
+        <!-- <router-link v-if="marketActive" to="/market" class="navigation-container-button">
             Market
-        </router-link>
+        </router-link> -->
     </div>
 </template>
 

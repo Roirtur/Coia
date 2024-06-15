@@ -625,7 +625,7 @@ export default {
       this.level += 1;
     },
     removeLvl: function () {
-      this.leve -= 1;
+      this.level -= 1;
     },
 
     fullRest: function () {
