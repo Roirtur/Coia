@@ -2,6 +2,7 @@
   <div class="status-main-container">
     <DiceRoll v-if="rollingDice" v-bind:diceNumber="diceNumber" v-bind:diceSides="diceSides"
       @close="rollingDice = false" @result="setLastRollValue" />
+    <AdvantagesUtils />
 
     <div class="rest-button status-button" @click="fullRest">
       <svg xmlns="http://www.w3.org/2000/svg"
@@ -417,6 +418,7 @@ Nothing
 <script lang="ts">
 // @ts-nocheck
 import DiceRoll from './DiceRoll.vue';
+import AdvantagesUtils from './AdvantagesUtils.vue'
 
 export default {
   name: 'StatusPage',
@@ -893,7 +895,8 @@ export default {
     },
   },
   components: {
-    DiceRoll
+    DiceRoll,
+    AdvantagesUtils
   }
 
 }

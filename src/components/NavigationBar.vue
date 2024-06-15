@@ -9,11 +9,14 @@
         <router-link to="/inventory" class="navigation-container-button">
             Inventory
         </router-link>
-        <router-link v-if="marketActive" to="/market" class="navigation-container-button">
-            Market
+        <router-link v-if="mapActive" to="/notes" class="navigation-container-button">
+            Notes
         </router-link>
         <router-link v-if="mapActive" to="/map" class="navigation-container-button">
             World
+        </router-link>
+        <router-link v-if="marketActive" to="/market" class="navigation-container-button">
+            Market
         </router-link>
     </div>
 </template>
@@ -35,7 +38,7 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 50%;
+    width: 70%;
     flex-wrap: nowrap
 }
 

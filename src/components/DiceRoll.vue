@@ -39,6 +39,7 @@ export default {
     },
     mounted() {
         this.resizeDices()
+        this.recalculateDices()
     },
     methods: {
         resizeDices() {
@@ -70,6 +71,12 @@ export default {
         },
         returnResult() {
             this.$emit('result', this.result)
+        },
+        recalculateDices () {
+            var new_value = this.dicesNumber + (+localStorage.getItem("advantages") || 0);
+            new_value = new_value < 1 ? 1 : new_value
+            this.stillRolling = new_value
+            this.dicesNumber = new_value
         }
     },
     watch: {
@@ -91,14 +98,14 @@ export default {
 <style scoped>
 
 .result-display {
-    z-index: 11;
+    /* z-index: 11; */
     position: absolute;
     top: 50%;
     left: 50%;
     height: 100px;
     align-items: center;
     display: flex;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) translateZ(100px);
     font-size: 3em;
     color: #cfcfcf;
     text-shadow: 4px 4px 4px #1e1e1e;

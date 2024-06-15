@@ -70,6 +70,11 @@ export default {
             const dice = document.getElementById('cube-' + this.id)
 
             setTimeout(() => {
+                if (!dice) {
+                    this.returnResult();
+                    return;
+                }
+
                 if (this.result === this.diceSides) {
                     dice.classList.add('dice-ultra-success')
                     this.resultId = "ultra-success"

@@ -3,6 +3,9 @@
     <div class="activate-debug" @click="debugMode = !debugMode">
       Debug
     </div>
+    <DiceRoll v-if="rollingDice" v-bind:diceNumber="diceNumber" v-bind:diceSides="diceSides"
+      @close="rollingDice = false" @result="checkLastRollValue" />
+    <AdvantagesUtils />
     <div class="signature-skills corner-background">
       <div class="skill-container-title">
         <p>Signature skills</p>
@@ -15,9 +18,15 @@
 
           </textarea>
         </div>
-        <div> {{ skill.diceNumber }}d{{ possibleSides[skill.diceSides] }} </div>
+        <div class="dices" @click="launchDices(skill)">
+          <span @click="if (debugMode || skill.points > 0) addDice(skill);"
+            @contextmenu="if (debugMode) removeDice(skill);">{{ skill.diceNumber }}</span>d<span
+            @click="if (debugMode || skill.points > 0) addDiceSide(skill);"
+            @contextmenu="if (debugMode) removeDiceSide(skill);">{{ possibleSides[skill.diceSides] }}</span>
+        </div>
         <input class="skill-cost" v-model="skill.cost" type="text">
-        <div class="rarity" :class="{ [`rarity-${rarities[skill.rarity]}`]: true }" @click="rarityUp(index)" @contextmenu="rarityDown(index)"> {{ rarities[skill.rarity] }} </div>
+        <div class="rarity" :class="{ [`rarity-${rarities[skill.rarity]}`]: true }" @click="rarityUp(index)"
+          @contextmenu="rarityDown(index)"> {{ rarities[skill.rarity] }} </div>
         <div v-if="debugMode" @click="signatureSkills.splice(index, 1)"> - </div>
       </div>
       <div v-if="signatureSkills.length < 12" class="add-signature-skill" @click="addSignatureSkill">
@@ -28,36 +37,65 @@
       <div class="skill-container-title">
         <p>Basic skills</p>
       </div>
-      <div class="skills-column skills-column-border">
+      <div v-for="(skill, index) in casualSkills" :key="index" class="casual-skill">
+        <input class="skill-name" v-model="skill.name" type="text" @contextmenu="skill.showNotes = true">
+        <div class="skill-notes" v-if="skill.showNotes" @contextmenu="skill.showNotes = false">
+          <textarea v-model="skill.notes" class="text-field notes-textarea">
 
+          </textarea>
+        </div>
+        <div class="dices" @click="launchDices(skill)">
+          <span @click="if (debugMode || skill.points > 0) addDice(skill);"
+            @contextmenu="if (debugMode) removeDice(skill);">{{ skill.diceNumber }}</span>d<span
+            @click="if (debugMode || skill.points > 0) addDiceSide(skill);"
+            @contextmenu="if (debugMode) removeDiceSide(skill);">{{ possibleSides[skill.diceSides] }}</span>
+        </div>
+        <input class="skill-cost" v-model="skill.cost" type="text">
+        <div @click="if (debugMode) addLevel(skill);" @contextmenu="if (debugMode) removeLevel(skill);">
+          {{ skill.level }}
+        </div>
+        <div @click="if (debugMode) addExperience(skill);" @contextmenu="if (debugMode) removeExperience(skill);">
+          {{ skill.experience }}
+        </div>
+        <div v-if="debugMode" @click="casualSkills.splice(index, 1)"> - </div>
       </div>
-      <div class="skills-column skills-column-border">
-
-      </div>
-      <div class="skills-column skills-column-border">
-
-      </div>
-      <div class="skills-column skills-column-border">
-
-      </div>
-      <div class="skills-column">
-
+      <div v-if="casualSkills.length < 45" class="add-casual-skill" @click="addCasualSkill">
+        +
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, watch, ref } from "vue";
+// @ts-nocheck
+import AdvantagesUtils from "./AdvantagesUtils.vue"
+import DiceRoll from "./DiceRoll.vue"
+import { defineComponent, reactive, watch, onMounted } from "vue";
 
-type Skill = {
+
+
+type sigSkill = {
   name: string;
+  points: number;
   rarity: number;
   diceNumber: number;
   diceSides: number;
   cost: string;
   notes: string;
   showNotes: boolean;
+  upgradable: boolean;
+};
+type casuSkill = {
+  name: string;
+  points: number;
+  level: number;
+  experience: number;
+  diceNumber: number;
+  diceSides: number;
+  cost: string;
+  notes: string;
+  showNotes: boolean;
+  upgradable: boolean;
 };
 
 const possibleSides = [
@@ -67,54 +105,216 @@ const possibleSides = [
 const rarities = [
   'Elementary', 'Primordial', 'Arcane', 'Esoteric', 'Celestial', 'Divine', 'Godlike'
 ]
+const raritiesPoints = [
+  2, 3, 4, 5, 6, 7, 8, 9
+]
 
 
 export default defineComponent({
   name: "SkillsView",
   setup() {
-    const signatureSkills: Skill[] = reactive([]);
-    const debugMode = ref(false);
+    const signatureSkills: sigSkill[] = reactive([]);
+    const casualSkills: casuSkill[] = reactive([]);
 
     watch(
-      () => signatureSkills,
-      (newVal, oldVal) => {
-        console.log(newVal, oldVal);
+      signatureSkills,
+      () => {
+        const signatureSkillsJSON = JSON.stringify(signatureSkills);
+
+        localStorage.setItem('signatureSkills', signatureSkillsJSON);
+      },
+      { deep: true }
+    );
+    watch(
+      casualSkills,
+      () => {
+        const casualSkillsJSON = JSON.stringify(casualSkills);
+
+        localStorage.setItem('casualSkills', casualSkillsJSON);
       },
       { deep: true }
     );
 
+    const loadDatas = () => {
+      const signatureSkillsJSON = localStorage.getItem('signatureSkills') || "[]";
+
+      const savedSigSkills = JSON.parse(signatureSkillsJSON);
+
+      savedSigSkills.forEach((skill: sigSkill) => {
+        signatureSkills.push(skill)
+      });
+
+      const casualSkillsJSON = localStorage.getItem('casualSkills') || "[]";
+
+      const savedCasuSkills = JSON.parse(casualSkillsJSON);
+
+      savedCasuSkills.forEach((skill: casuSkill) => {
+        casualSkills.push(skill)
+      });
+
+    };
+
+    onMounted(() => {
+      loadDatas();
+    });
+
     const addSignatureSkill = () => {
       signatureSkills.push({
         name: "Unknown",
+        points: raritiesPoints[0],
         rarity: 0,
         diceNumber: 1,
         diceSides: 0,
         cost: "Free",
         notes: "Unknown effect",
         showNotes: false,
+        upgradable: true,
+      });
+    };
+
+    const addCasualSkill = () => {
+      casualSkills.push({
+        name: "Unknown",
+        points: 0,
+        level: 0,
+        experience: 0,
+        diceNumber: 1,
+        diceSides: 0,
+        cost: "Free",
+        notes: "Unknown effect",
+        showNotes: false,
+        upgradable: false,
       });
     };
 
     const rarityUp = (index: number) => {
       if (signatureSkills[index].rarity >= 6) return;
       signatureSkills[index].rarity++;
+      signatureSkills[index].diceNumber = 1;
+      signatureSkills[index].diceSides = 0;
+      signatureSkills[index].points = raritiesPoints[signatureSkills[index].rarity];
+      signatureSkills[index].upgradable = signatureSkills[index].points != 0;
     }
 
     const rarityDown = (index: number) => {
       if (signatureSkills[index].rarity <= 0) return;
       signatureSkills[index].rarity--;
+      signatureSkills[index].diceNumber = 1;
+      signatureSkills[index].diceSides = 0;
+      signatureSkills[index].points = raritiesPoints[signatureSkills[index].rarity];
+      signatureSkills[index].upgradable = signatureSkills[index].points != 0;
     }
 
     return {
       signatureSkills,
       addSignatureSkill,
+      addCasualSkill,
       possibleSides,
       rarities,
       rarityUp,
       rarityDown,
-      debugMode,
+      casualSkills,
+      raritiesPoints
     };
   },
+  methods: {
+    addDice(skill: any) {
+      if (skill.diceNumber >= 35) return;
+      this.removePoint(skill);
+      skill.diceNumber++;
+    },
+    removeDice(skill: any) {
+      if (skill.diceNumber <= 1) {
+        skill.diceNumber = 1;
+        return;
+      }
+      skill.diceNumber--;
+    },
+    addDiceSide(skill: any) {
+      if (skill.diceSides > 8) {
+        skill.diceSides = 9
+        return;
+      }
+      this.removePoint(skill);
+      skill.diceSides++;
+    },
+    removeDiceSide(skill: any) {
+      if (skill.diceSides < 1) {
+        skill.diceSides = 0
+        return;
+      }
+      skill.diceSides--;
+    },
+    addLevel(skill: any) {
+      skill.level++;
+      skill.points++;
+      this.setUpgradable(skill)
+    },
+    removeLevel(skill: any) {
+      skill.level--;
+      skill.points = skill.level;
+      this.setUpgradable(skill)
+      skill.diceNumber = 0;
+      skill.diceSides = 0;
+    },
+    removePoint(skill: any) {
+      if (skill.points <= 1) {
+        skill.points = 0;
+        this.setUpgradable(skill)
+        return;
+      }
+      skill.points--;
+    },
+    expRequired(skill: any) {
+      var exp = 2*(1+skill.level)
+      return exp;
+    },
+    addExperience(skill: any) {
+      skill.experience++;
+      var expRequired = this.expRequired(skill)
+      if (skill.experience >= expRequired) {
+        this.addLevel(skill)
+        skill.experience -= expRequired;
+      }
+    },
+    removeExperience(skill: any) {
+      if (skill.experience <= 0) return;
+      skill.experience--;
+    },
+    checkLastRollValue(value: any) {
+      if (this.rollingDiceObject) {
+        if (value >= 1) {
+          this.addExperience(this.rollingDiceObject);
+          this.rollingDiceObject = null;
+        }
+      }
+    },
+    launchDices(skill: any) {
+      if (this.debugMode || skill.upgradable) return;
+      this.diceNumber = skill.diceNumber;
+      this.diceSides = possibleSides[skill.diceSides];
+      this.rollingDice = true;
+      if (skill.experience != undefined) this.rollingDiceObject = skill;
+    },
+    setUpgradable(skill: any) {
+      setTimeout(() => {
+        skill.upgradable = skill.points != 0;
+      }, 10)
+    }
+  },
+  components: {
+    AdvantagesUtils,
+    DiceRoll
+  },
+  data() {
+    return {
+      rollingDice: false,
+      diceNumber: 0,
+      diceSides: 0,
+      debugMode: false,
+      rollingDiceObject: null,
+    }
+  }
 });
 
 </script>
@@ -133,6 +333,7 @@ export default defineComponent({
   width: calc(100% - 2* 100px);
   /* height: 50%; */
   max-height: 25%;
+  height: 25vh;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -143,7 +344,9 @@ export default defineComponent({
 }
 
 .signature-skills .signature-skill,
-.add-signature-skill {
+.add-signature-skill,
+.add-casual-skill,
+.casual-skill {
   padding: 10px 0;
   margin-right: 10px;
   padding-right: 10px;
@@ -155,6 +358,10 @@ export default defineComponent({
   width: calc(33% - 10px);
   border-right: 2px solid white;
   /* position: relative; */
+}
+
+.casual-skill {
+  padding: 5px 0;
 }
 
 .skill-notes {
@@ -192,9 +399,14 @@ textarea.notes-textarea {
 }
 
 
-.add-signature-skill {
+.add-signature-skill,
+.add-casual-skill {
   justify-content: center;
   border: none;
+}
+
+.dices {
+  width: 20%;
 }
 
 .corner-background {
@@ -224,10 +436,14 @@ textarea.notes-textarea {
 .casual-skills {
   position: relative;
   width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 1fr;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  padding: 20px 100px;
+  width: calc(100% - 2* 100px);
 }
 
 .skill-container-title {
@@ -310,6 +526,7 @@ input:focus-visible {
 .rarity-Godlike {
   color: #d4af37;
 }
+
 .activate-debug {
   position: absolute;
   bottom: -40px;
