@@ -16,8 +16,8 @@
             World
         </router-link> -->
         <!-- <router-link v-if="marketActive" to="/market" class="navigation-container-button">
-            Market 
-        </router-link> -->    
+            Market
+        </router-link> -->
     </div>
 </template>
 
