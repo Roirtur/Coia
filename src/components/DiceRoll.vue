@@ -110,7 +110,7 @@ export default {
     color: #cfcfcf;
     text-shadow: 4px 4px 4px #1e1e1e;
     padding: 30px;
-    background: #111111;
+    /* background: #111111; */
     background:
         -moz-linear-gradient(45deg, transparent 35px, #111111 10px),
         -moz-linear-gradient(135deg, transparent 35px, #111111 10px),

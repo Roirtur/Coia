@@ -18,7 +18,7 @@
 
           </textarea>
         </div>
-        <div class="dices" @click="launchDices(skill)">
+        <div class="dices" @click="launchDices(skill)" :class="skill.upgradable ? 'upgradable' : ''">
           <span @click="if (debugMode || skill.points > 0) addDice(skill);"
             @contextmenu="if (debugMode) removeDice(skill);">{{ skill.diceNumber }}</span>d<span
             @click="if (debugMode || skill.points > 0) addDiceSide(skill);"
@@ -44,11 +44,12 @@
 
           </textarea>
         </div>
-        <div class="dices" @click="launchDices(skill)">
+        <div class="dices" @click="launchDices(skill)" :class="skill.upgradable ? 'upgradable' : ''">
           <span @click="if (debugMode || skill.points > 0) addDice(skill);"
-            @contextmenu="if (debugMode) removeDice(skill);">{{ skill.diceNumber }}</span>d<span
-            @click="if (debugMode || skill.points > 0) addDiceSide(skill);"
-            @contextmenu="if (debugMode) removeDiceSide(skill);">{{ possibleSides[skill.diceSides] }}</span>
+            @contextmenu="if (debugMode) removeDice(skill);">
+            {{ skill.diceNumber }}</span>d<span @click="if (debugMode || skill.points > 0) addDiceSide(skill);"
+            @contextmenu="if (debugMode) removeDiceSide(skill);">
+            {{ possibleSides[skill.diceSides] }}</span>
         </div>
         <input class="skill-cost" v-model="skill.cost" type="text">
         <div @click="if (debugMode) addLevel(skill);" @contextmenu="if (debugMode) removeLevel(skill);">
@@ -266,11 +267,12 @@ export default defineComponent({
       skill.points--;
     },
     expRequired(skill: any) {
-      var exp = 2*(1+skill.level)
+      var exp = (skill.level**2)+1
+      console.log(exp)
       return exp;
     },
-    addExperience(skill: any) {
-      skill.experience++;
+    addExperience(skill: any, value = 1) {
+      skill.experience += value;
       var expRequired = this.expRequired(skill)
       if (skill.experience >= expRequired) {
         this.addLevel(skill)
@@ -284,7 +286,7 @@ export default defineComponent({
     checkLastRollValue(value: any) {
       if (this.rollingDiceObject) {
         if (value >= 1) {
-          this.addExperience(this.rollingDiceObject);
+          this.addExperience(this.rollingDiceObject, value);
           this.rollingDiceObject = null;
         }
       }
@@ -407,6 +409,7 @@ textarea.notes-textarea {
 
 .dices {
   width: 20%;
+  transition: all 0.3s;
 }
 
 .corner-background {
@@ -532,5 +535,9 @@ input:focus-visible {
   bottom: -40px;
   left: -70px;
   opacity: 0.2;
+}
+
+.upgradable {
+  color: #33d633;
 }
 </style>
