@@ -29,7 +29,7 @@
         <p @click="removeLvl" v-if="debugMode"> - </p>
       </div>
     </div>
-
+    
     <div class="player-stats-container">
       <div class="base-container body-status-container">
 
@@ -392,7 +392,6 @@ Nothing
         </div>
       </div>
     </div>
-
 
     <div class="points-exp-container">
       <div class="base-container points-container">
