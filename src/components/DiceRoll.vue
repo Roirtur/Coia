@@ -3,7 +3,7 @@
         <div v-if="showResult" class="result-display">
             {{ result }} SUCCESS
         </div>
-        <div class="rolling-dice-container">
+        <div class="rolling-dice-container" v-if="!showResult">
             <DiceUnit :diceSides="diceSides" :id="n" v-for="n in dicesNumber"
                 :key="n" @result="registerResult" />
         </div>
@@ -110,22 +110,21 @@ export default {
     color: #cfcfcf;
     text-shadow: 4px 4px 4px #1e1e1e;
     padding: 30px;
-    /* background: #111111; */
     background:
-        -moz-linear-gradient(45deg, transparent 35px, #111111 10px),
-        -moz-linear-gradient(135deg, transparent 35px, #111111 10px),
-        -moz-linear-gradient(225deg, transparent 35px, #111111 10px),
-        -moz-linear-gradient(315deg, transparent 35px, #111111 10px);
+        -moz-linear-gradient(45deg, transparent 35px, #1e1e1e 10px),
+        -moz-linear-gradient(135deg, transparent 35px, #1e1e1e 10px),
+        -moz-linear-gradient(225deg, transparent 35px, #1e1e1e 10px),
+        -moz-linear-gradient(315deg, transparent 35px, #1e1e1e 10px);
     background:
-        -o-linear-gradient(45deg, transparent 35px, #111111 10px),
-        -o-linear-gradient(135deg, transparent 35px, #111111 10px),
-        -o-linear-gradient(225deg, transparent 35px, #111111 10px),
-        -o-linear-gradient(315deg, transparent 35px, #111111 10px);
+        -o-linear-gradient(45deg, transparent 35px, #1e1e1e 10px),
+        -o-linear-gradient(135deg, transparent 35px, #1e1e1e 10px),
+        -o-linear-gradient(225deg, transparent 35px, #1e1e1e 10px),
+        -o-linear-gradient(315deg, transparent 35px, #1e1e1e 10px);
     background:
-        -webkit-linear-gradient(45deg, transparent 35px, #111111 10px),
-        -webkit-linear-gradient(135deg, transparent 35px, #111111 10px),
-        -webkit-linear-gradient(225deg, transparent 35px, #111111 10px),
-        -webkit-linear-gradient(315deg, transparent 35px, #111111 10px);
+        -webkit-linear-gradient(45deg, transparent 35px, #1e1e1e 10px),
+        -webkit-linear-gradient(135deg, transparent 35px, #1e1e1e 10px),
+        -webkit-linear-gradient(225deg, transparent 35px, #1e1e1e 10px),
+        -webkit-linear-gradient(315deg, transparent 35px, #1e1e1e 10px);
     background-position: bottom left, bottom right, top right, top left;
     -moz-background-size: 51% 51%;
     -webkit-background-size: 51% 51%;

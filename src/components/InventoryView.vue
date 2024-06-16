@@ -23,7 +23,7 @@ export default {
         }
     },
     watch: {
-        notes(inventory) {
+        inventory (inventory)  {
             localStorage.setItem("playerInventory", inventory);
         },
         kades(kades) {
