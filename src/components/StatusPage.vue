@@ -2,6 +2,7 @@
   <div class="status-main-container">
     <DiceRoll v-if="rollingDice" v-bind:diceNumber="diceNumber" v-bind:diceSides="diceSides"
       @close="rollingDice = false" @result="setLastRollValue" />
+    <AdvantagesUtils />
 
     <div class="rest-button status-button" @click="fullRest">
       <svg xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +30,7 @@
         <p @click="removeLvl" v-if="debugMode"> - </p>
       </div>
     </div>
-
+    
     <div class="player-stats-container">
       <div class="base-container body-status-container">
 
@@ -393,7 +394,6 @@ Nothing
       </div>
     </div>
 
-
     <div class="points-exp-container">
       <div class="base-container points-container">
         <p>POINTS :</p>
@@ -418,50 +418,51 @@ Nothing
 <script lang="ts">
 // @ts-nocheck
 import DiceRoll from './DiceRoll.vue';
+import AdvantagesUtils from './AdvantagesUtils.vue'
 
 export default {
   name: 'StatusPage',
   data() {
     return {
       debugMode: false,
-      points: 0,
-      pointsAvailable: false,
-      experience: 0,
-      job: 'Jobless',
-      playerClass: 'None',
-      description: 'Nothing',
-      mana: 2,
-      manaMax: 2,
-      lostManaTrack: 0,
-      manaMaxGainedToday: 0,
-      manaMaxGainedThisLevel: 0,
+      points: parseInt(localStorage.points) || 0,
+      pointsAvailable: parseInt(localStorage.points) > 0 || false,
+      experience: parseInt(localStorage.experience) || 0,
+      job: localStorage.job || 'Jobless',
+      playerClass: localStorage.getItem('playerClass') || 'None',
+      description: localStorage.description || 'Nothing',
+      mana: parseInt(localStorage.mana) || 2,
+      manaMax: parseInt(localStorage.manaMax) || 2,
+      lostManaTrack: parseInt(localStorage.lostManaTrack) || 0,
+      manaMaxGainedToday: parseInt(localStorage.manaMaxGainedToday) || 0,
+      manaMaxGainedThisLevel: parseInt(localStorage.manaMaxGainedThisLevel) || 0,
 
-      health: 8,
-      healthMax: 8,
-      lostHeartTrack: 0,
+      health: parseInt(localStorage.health) || 8,
+      healthMax: parseInt(localStorage.healthMax) || 8,
+      lostHeartTrack: parseInt(localStorage.lostHeartTrack) || 0,
       isCheckingPermaHealthUp: false,
-      fatigue: 0,
-      fatigueMax: 3,
-      name: 'Character',
-      level: 0,
+      fatigue: parseInt(localStorage.fatigue) || 0,
+      fatigueMax: parseInt(localStorage.fatigueMax) || 3,
+      name: localStorage.name || 'Character',
+      level: parseInt(localStorage.level) || 0,
       body_status: {
-        head: 0,
-        upperArmLeft: 0,
-        upperArmRight: 0,
-        torsoLeft: 0,
-        torsoRight: 0,
-        waistLeft: 0,
-        waistRight: 0,
-        lowerArmLeft: 0,
-        lowerArmRight: 0,
-        handLeft: 0,
-        handRight: 0,
-        thighLeft: 0,
-        thighRight: 0,
-        calfLeft: 0,
-        calfRight: 0,
-        footLeft: 0,
-        footRight: 0,
+        head: parseInt(localStorage.head) || 0,
+        upperArmLeft: parseInt(localStorage.upperArmLeft) || 0,
+        upperArmRight: parseInt(localStorage.upperArmRight) || 0,
+        torsoLeft: parseInt(localStorage.torsoLeft) || 0,
+        torsoRight: parseInt(localStorage.torsoRight) || 0,
+        waistLeft: parseInt(localStorage.waistLeft) || 0,
+        waistRight: parseInt(localStorage.waistRight) || 0,
+        lowerArmLeft: parseInt(localStorage.lowerArmLeft) || 0,
+        lowerArmRight: parseInt(localStorage.lowerArmRight) || 0,
+        handLeft: parseInt(localStorage.handLeft) || 0,
+        handRight: parseInt(localStorage.handRight) || 0,
+        thighLeft: parseInt(localStorage.thighLeft) || 0,
+        thighRight: parseInt(localStorage.thighRight) || 0,
+        calfLeft: parseInt(localStorage.calfLeft) || 0,
+        calfRight: parseInt(localStorage.calfRight) || 0,
+        footLeft: parseInt(localStorage.footLeft) || 0,
+        footRight: parseInt(localStorage.footRight) || 0,
       },
       bodyValues: {
         0: "#121212",
@@ -470,22 +471,22 @@ export default {
         3: "#330423",
       },
       dices: {
-        strengthNumber: 1,
-        strengthSides: 0,
-        defenseNumber: 1,
-        defenseSides: 0,
-        dexterityNumber: 1,
-        dexteritySides: 0,
-        agilityNumber: 1,
-        agilitySides: 0,
-        focusNumber: 1,
-        focusSides: 0,
-        staminaNumber: 1,
-        staminaSides: 0,
-        magicPowerNumber: 1,
-        magicPowerSides: 0,
-        magicDefenseNumber: 1,
-        magicDefenseSides: 0,
+        strengthNumber: parseInt(localStorage.strengthNumber) || 1,
+        strengthSides: parseInt(localStorage.strengthSides) || 0,
+        defenseNumber: parseInt(localStorage.defenseNumber) || 1,
+        defenseSides: parseInt(localStorage.defenseSides) || 0,
+        dexterityNumber: parseInt(localStorage.dexterityNumber) || 1,
+        dexteritySides: parseInt(localStorage.dexteritySides) || 0,
+        agilityNumber: parseInt(localStorage.agilityNumber) || 1,
+        agilitySides: parseInt(localStorage.agilitySides) || 0,
+        focusNumber: parseInt(localStorage.focusNumber) || 1,
+        focusSides: parseInt(localStorage.focusSides) || 0,
+        staminaNumber: parseInt(localStorage.staminaNumber) || 1,
+        staminaSides: parseInt(localStorage.staminaSides) || 0,
+        magicPowerNumber: parseInt(localStorage.magicPowerNumber) || 1,
+        magicPowerSides: parseInt(localStorage.magicPowerSides) || 0,
+        magicDefenseNumber: parseInt(localStorage.magicDefenseNumber) || 1,
+        magicDefenseSides: parseInt(localStorage.magicDefenseSides) || 0,
       },
       possibleSidesValues: {
         0: 100,
@@ -505,70 +506,6 @@ export default {
       lastRollValue: 0,
     };
   },
-  async beforeMount() {
-
-    this.healthMax = parseInt(localStorage.healthMax) || 8;
-    this.health = parseInt(localStorage.health) || 8;
-    this.lostHeartTrack = parseInt(localStorage.lostHeartTrack) || 0;
-
-    this.fatigueMax = parseInt(localStorage.fatigueMax) || 3;
-    this.fatigue = parseInt(localStorage.fatigue) || 0;
-
-    this.manaMax = parseInt(localStorage.manaMax) || 2;
-    this.mana = parseInt(localStorage.mana) || 2;
-    this.lostManaTrack = parseInt(localStorage.lostManaTrack) || 0;
-    this.manaMaxGainedToday = parseInt(localStorage.manaMaxGainedToday) || 0;
-    this.manaMaxGainedThisLevel = parseInt(localStorage.manaMaxGainedThisLevel) || 0;
-
-    this.points = parseInt(localStorage.points) || 0;
-    this.pointsAvailable = this.points > 0;
-
-    this.dices = {
-      strengthNumber: parseInt(localStorage.strengthNumber) || 1,
-      strengthSides: parseInt(localStorage.strengthSides) || 0,
-      defenseNumber: parseInt(localStorage.defenseNumber) || 1,
-      defenseSides: parseInt(localStorage.defenseSides) || 0,
-      dexterityNumber: parseInt(localStorage.dexterityNumber) || 1,
-      dexteritySides: parseInt(localStorage.dexteritySides) || 0,
-      agilityNumber: parseInt(localStorage.agilityNumber) || 1,
-      agilitySides: parseInt(localStorage.agilitySides) || 0,
-      focusNumber: parseInt(localStorage.focusNumber) || 1,
-      focusSides: parseInt(localStorage.focusSides) || 0,
-      staminaNumber: parseInt(localStorage.staminaNumber) || 1,
-      staminaSides: parseInt(localStorage.staminaSides) || 0,
-      magicPowerNumber: parseInt(localStorage.magicPowerNumber) || 1,
-      magicPowerSides: parseInt(localStorage.magicPowerSides) || 0,
-      magicDefenseNumber: parseInt(localStorage.magicDefenseNumber) || 1,
-      magicDefenseSides: parseInt(localStorage.magicDefenseSides) || 0,
-    };
-
-    this.body_status = {
-      head: parseInt(localStorage.head) || 0,
-      upperArmLeft: parseInt(localStorage.upperArmLeft) || 0,
-      upperArmRight: parseInt(localStorage.upperArmRight) || 0,
-      torsoLeft: parseInt(localStorage.torsoLeft) || 0,
-      torsoRight: parseInt(localStorage.torsoRight) || 0,
-      waistLeft: parseInt(localStorage.waistLeft) || 0,
-      waistRight: parseInt(localStorage.waistRight) || 0,
-      lowerArmLeft: parseInt(localStorage.lowerArmLeft) || 0,
-      lowerArmRight: parseInt(localStorage.lowerArmRight) || 0,
-      handLeft: parseInt(localStorage.handLeft) || 0,
-      handRight: parseInt(localStorage.handRight) || 0,
-      thighLeft: parseInt(localStorage.thighLeft) || 0,
-      thighRight: parseInt(localStorage.thighRight) || 0,
-      calfLeft: parseInt(localStorage.calfLeft) || 0,
-      calfRight: parseInt(localStorage.calfRight) || 0,
-      footLeft: parseInt(localStorage.footLeft) || 0,
-      footRight: parseInt(localStorage.footRight) || 0,
-    };
-
-    this.experience = parseInt(localStorage.experience) || 0;
-    this.level = parseInt(localStorage.level) || 0;
-    this.job = localStorage.job || 'Jobless';
-    this.playerClass = localStorage.playerClass || 'None';
-    this.description = localStorage.description || 'Nothing';
-    this.name = localStorage.name || 'Character';
-  },
   mounted() {
     var healthCells = document.getElementsByClassName('qhearth-icon');
     var manaCells = document.getElementsByClassName('mana-icon');
@@ -586,6 +523,7 @@ export default {
       fatigueCells[i].classList.add('fatigue-filled');
     }
 
+    this.checkExperienceLeveling()
   },
   methods: {
     toggleFill: function (event) {
@@ -624,7 +562,7 @@ export default {
       this.level += 1;
     },
     removeLvl: function () {
-      this.leve -= 1;
+      this.level -= 1;
     },
 
     fullRest: function () {
@@ -713,6 +651,13 @@ export default {
         this.healthMax += 1;
         return;
       }
+    },
+    checkExperienceLeveling () {
+      if (this.experience >= this.getRequiredExp(this.level)) {
+        this.experience -= this.getRequiredExp(this.level);
+        this.level += 1;
+        this.points += this.getLevelUpPoints(this.level);
+      }
     }
   },
   watch: {
@@ -735,13 +680,7 @@ export default {
       this.pointsAvailable = newPoints > 0;
     },
     experience: function (newExperience) {
-
-      if (newExperience >= this.getRequiredExp(this.level)) {
-        this.experience = 0;
-        this.level += 1;
-        this.points += this.getLevelUpPoints(this.level);
-      }
-
+      this.checkExperienceLeveling();
       localStorage.setItem('experience', newExperience);
     },
     level: function (newLevel) {
@@ -887,14 +826,15 @@ export default {
       localStorage.setItem('job', this.job);
     },
     playerClass: function () {
-      localStorage.setItem('class', this.playerClass);
+      localStorage.setItem('playerClass', this.playerClass);
     },
-    name: function () {
-      localStorage.setItem('name', this.name);
+    name: function (name) {
+      localStorage.setItem('name', name);
     },
   },
   components: {
-    DiceRoll
+    DiceRoll,
+    AdvantagesUtils
   }
 
 }

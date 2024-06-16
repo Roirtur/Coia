@@ -6,8 +6,9 @@
             <div class="choice-text">
                 Save or load ?
             </div>
+            <input type="text" v-model="filename" class="text-field"/>
             <div v-if="savedMessage" style="height: 0; padding-bottom: -100px;">
-                Saved to your Download folder! (CoiaCharacter.json)
+                Saved to your Download folder! ({{ filename }}.json)
             </div>
             <div class="choice-buttons">
                 <div @click="saveLocalStorageData" class="choice-button-save">
@@ -46,7 +47,8 @@ export default {
     data() {
         return {
             choiceWindow: false,
-            savedMessage: false,        
+            savedMessage: false,
+            filename: localStorage.getItem("name") || "Character"    
         }
     },
     methods: {
@@ -63,7 +65,7 @@ export default {
                 // Create a hidden link element and simulate a click to trigger the download
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = 'CoiaCharacter.json';
+                link.download = this.filename + '.json';
                 link.click();
 
                 // Remove the link and revoke the object URL
@@ -85,6 +87,7 @@ export default {
             if (file && file.type === "application/json") {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    localStorage.clear()
                     try {
                         const data = JSON.parse(e.target.result);
                         Object.keys(data).forEach(key => {
@@ -222,5 +225,20 @@ export default {
 
 .save-button:active {
     transform: scale(0.9);
+}
+
+.text-field {
+    background-color: #121212;
+    color: #e7972e;
+    border: none;
+    text-shadow: 2px 2px 2px #0a0a0a !important;
+    font-family: recharge !important;
+    font-size: 1.1em;
+    padding: 10px;
+    text-align: center;
+}
+
+.text-field:focus {
+    outline: 2px solid #e7972e;
 }
 </style>

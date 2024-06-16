@@ -19,6 +19,7 @@ import NavigationBar from './components/NavigationBar.vue'
 import SaveJson from './components/SaveJson.vue'
 import ResetSheet from './components/ResetSheet.vue'
 
+window.addEventListener("contextmenu", e => e.preventDefault());
 
 export default {
   name: 'App',
@@ -64,6 +65,13 @@ a {
 
 input[type="text"], textarea {
   cursor: url('./assets/cursors/set115_skyrim/SR-text.cur'), auto;
+}
+
+textarea {
+  overflow: hidden;
+  align-items: flex-start;
+  resize: none;
+  overflow-y: scroll;
 }
 
 svg {
