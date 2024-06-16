@@ -1,5 +1,5 @@
 <template>
-    <textarea class="description-text text-field" v-model="notes">
+    <textarea class="description-text text-field notes-container" v-model="notes">
     </textarea>
 </template>
 
@@ -34,5 +34,10 @@ export default {
 
 .text-field:focus {
     outline: 2px solid #e7972e;
+}
+
+.notes-container {
+    width: 85%;
+    height: 80%;
 }
 </style>
