@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { ref, watchEffect } from 'vue';
 
 export default {
