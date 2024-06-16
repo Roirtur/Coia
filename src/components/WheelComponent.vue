@@ -177,7 +177,7 @@ export default {
 
     methods: {
         handleClick() {
-            if (!this.canRotate) return;
+            if (!this.canRotate || +(localStorage.getItem('gachaPoints') || 1) <= 0) return;
             if (this.verify) {
                 this.$emit("rotate-start", this.onRotateStart);
                 return;

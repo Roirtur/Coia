@@ -1,8 +1,8 @@
 <template>
-    <div class="background">
-        <div class="wheel-container corner-background">
-            <WheelComponent style="width: 90%; max-width: 100%" :prizes="prizesCanvas" :verify="canvasVerify"
-                :canvas="canvasOptions" @rotateEnd="onRotateEnd" @rotateStart="onRotateStart"/>
+    <div class="background" @click="requestClose">
+        <div class="wheel-container corner-background" @click.stop>
+            <WheelComponent style="width: 90%;" :prizes="prizesCanvas" :verify="canvasVerify"
+                :canvas="canvasOptions" @rotateEnd="onRotateEnd" @rotateStart="onRotateStart" />
         </div>
     </div>
 </template>
@@ -80,10 +80,15 @@ export default {
     },
     methods: {
         onRotateEnd(prize) {
-            console.log(prize, prize.name)
+            this.spinning = false;
+            localStorage.setItem('gachaPoints', +(localStorage.getItem('gachaPoints') || 1) - 1);
+            this.$emit("rotate-end", prize.id-1);
         },
         onRotateStart() {
-            console.log("started")
+            this.spinning = true;
+        },
+        requestClose() {
+            if (!this.spinning) this.$emit('close');
         }
     }
 }
