@@ -6,6 +6,7 @@
     <DiceRoll v-if="rollingDice" v-bind:diceNumber="diceNumber" v-bind:diceSides="diceSides"
       @close="rollingDice = false" @result="checkLastRollValue" />
     <AdvantagesUtils />
+    <GachaWheel v-if="gachaWheelBool"/>
     <div class="signature-skills corner-background">
       <div class="skill-container-title">
         <p>Signature skills</p>
@@ -72,7 +73,7 @@
 import AdvantagesUtils from "./AdvantagesUtils.vue"
 import DiceRoll from "./DiceRoll.vue"
 import { defineComponent, reactive, watch, onMounted } from "vue";
-
+import GachaWheel from './GachaWheel.vue'
 
 
 type sigSkill = {
@@ -307,7 +308,8 @@ export default defineComponent({
   },
   components: {
     AdvantagesUtils,
-    DiceRoll
+    DiceRoll,
+    GachaWheel,
   },
   data() {
     return {
@@ -316,6 +318,7 @@ export default defineComponent({
       diceSides: 0,
       debugMode: false,
       rollingDiceObject: null,
+      gachaWheelBool: false,
     }
   }
 });
@@ -504,27 +507,27 @@ input:focus-visible {
 }
 
 .rarity-Elementary {
-  color: #c5a88c;
+  color: #42071c;
 }
 
 .rarity-Primordial {
-  color: #4ac487;
+  color: #661431;
 }
 
 .rarity-Arcane {
-  color: #ce6ee6;
+  color: #a1259a;
 }
 
 .rarity-Esoteric {
-  color: #5738ad;
+  color: #6a24ab;
 }
 
 .rarity-Celestial {
-  color: #52d2e9;
+  color: #4d35c4;
 }
 
 .rarity-Divine {
-  color: #a7dfe9;
+  color: #abd5ff;
 }
 
 .rarity-Godlike {

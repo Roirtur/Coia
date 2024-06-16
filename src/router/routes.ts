@@ -7,6 +7,7 @@ import InventoryView from "../components/InventoryView.vue";
 import MarketView from "../components/MarketView.vue";
 import MapView from "../components/MapView.vue";
 import NotesView from "../components/NotesView.vue";
+import KillsRegistery from "../components/KillsRegistery.vue"
 
 const routes = [
   {
@@ -38,6 +39,11 @@ const routes = [
     path: "/map",
     name: "WorldMap",
     component: MapView,
+  },
+  {
+    path: "/kills",
+    name: "Kills",
+    component: KillsRegistery,
   },
 
   {
