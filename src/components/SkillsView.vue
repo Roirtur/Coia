@@ -274,6 +274,7 @@ export default defineComponent({
     addExperience(skill: any, value = 1) {
       skill.experience += value;
       var expRequired = this.expRequired(skill)
+      localStorage.setItem('experience', +localStorage.getItem('experience') + value)
       if (skill.experience >= expRequired) {
         this.addLevel(skill)
         skill.experience -= expRequired;

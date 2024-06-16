@@ -8,7 +8,7 @@ export default {
     name: 'NotesView',
     data() {
         return {
-            notes: localStorage.getItem("playerGlobalNotes")
+            notes: localStorage.getItem("playerGlobalNotes") || ''
         }
     },
     watch : {
@@ -20,6 +20,7 @@ export default {
 </script>
 
 <style scoped>
+
 .text-field {
   background-color: #121212;
   color: #e7972e;
