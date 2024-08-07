@@ -58,8 +58,10 @@ export default {
             if (result === "success") {
                 this.result++
             } else if (result === "ultra-success") {
-                this.result++
+                this.result += 2
                 this.ultraSuccess++
+            } else {
+                this.result--
             }
 
             this.stillRolling--

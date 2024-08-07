@@ -223,7 +223,7 @@
       </div>
       <div class="base-container base-stats-container">
         <div class="flexend-container strength-container">
-          <p>STRENGTH :</p>
+          <p @click="launchDices(dices.strengthNumber, this.possibleSidesValues[dices.strengthSides])">STRENGTH :</p>
           <div class="base-stat"
             @click="launchDices(dices.strengthNumber, this.possibleSidesValues[dices.strengthSides])">
             {{ dices.strengthNumber }}d{{ this.possibleSidesValues[dices.strengthSides] }}
@@ -242,7 +242,7 @@
           </div>
         </div>
         <div class="flexend-container defense-container">
-          <p>DEFENSE :</p>
+          <p @click="launchDices(dices.defenseNumber, this.possibleSidesValues[dices.defenseSides])">DEFENSE :</p>
           <div class="base-stat"
             @click="launchDices(dices.defenseNumber, this.possibleSidesValues[dices.defenseSides])">
             {{ dices.defenseNumber }}d{{ this.possibleSidesValues[dices.defenseSides] }}
@@ -261,7 +261,8 @@
           </div>
         </div>
         <div class="flexend-container magic-power-container">
-          <p>MAGIC POW :</p>
+          <p @click="launchDices(dices.magicPowerNumber, this.possibleSidesValues[dices.magicPowerSides])">MAGIC POW :
+          </p>
           <div class="base-stat"
             @click="launchDices(dices.magicPowerNumber, this.possibleSidesValues[dices.magicPowerSides])">
             {{ dices.magicPowerNumber }}d{{ this.possibleSidesValues[dices.magicPowerSides] }}
@@ -280,7 +281,8 @@
           </div>
         </div>
         <div class="flexend-container magic-defense-container">
-          <p>MAGIC DEF :</p>
+          <p @click="launchDices(dices.magicDefenseNumber, this.possibleSidesValues[dices.magicDefenseSides])">MAGIC DEF
+            :</p>
           <div class="base-stat"
             @click="launchDices(dices.magicDefenseNumber, this.possibleSidesValues[dices.magicDefenseSides])">
             {{ dices.magicDefenseNumber }}d{{ this.possibleSidesValues[dices.magicDefenseSides] }}
@@ -299,7 +301,7 @@
           </div>
         </div>
         <div class="flexend-container dexterity-container">
-          <p>DEXTERITY :</p>
+          <p @click="launchDices(dices.dexterityNumber, this.possibleSidesValues[dices.dexteritySides])">DEXTERITY :</p>
           <div class="base-stat"
             @click="launchDices(dices.dexterityNumber, this.possibleSidesValues[dices.dexteritySides])">
             {{ dices.dexterityNumber }}d{{ this.possibleSidesValues[dices.dexteritySides] }}
@@ -318,7 +320,7 @@
           </div>
         </div>
         <div class="flexend-container agility-container">
-          <p>AGILITY :</p>
+          <p @click="launchDices(dices.agilityNumber, this.possibleSidesValues[dices.agilitySides])">AGILITY :</p>
           <div class="base-stat"
             @click="launchDices(dices.agilityNumber, this.possibleSidesValues[dices.agilitySides])">
             {{ dices.agilityNumber }}d{{ this.possibleSidesValues[dices.agilitySides] }}
@@ -337,7 +339,7 @@
           </div>
         </div>
         <div class="flexend-container focus-container">
-          <p>FOCUS :</p>
+          <p @click="launchDices(dices.focusNumber, this.possibleSidesValues[dices.focusSides])">FOCUS :</p>
           <div class="base-stat" @click="launchDices(dices.focusNumber, this.possibleSidesValues[dices.focusSides])">
             {{ dices.focusNumber }}d{{ this.possibleSidesValues[dices.focusSides] }}
           </div>
@@ -355,7 +357,7 @@
           </div>
         </div>
         <div class="flexend-container stamina-container">
-          <p>STAMINA :</p>
+          <p @click="launchDices(dices.staminaNumber, this.possibleSidesValues[dices.staminaSides])">STAMINA :</p>
           <div class="base-stat"
             @click="launchDices(dices.staminaNumber, this.possibleSidesValues[dices.staminaSides])">
             {{ dices.staminaNumber }}d{{ this.possibleSidesValues[dices.staminaSides] }}
@@ -426,8 +428,8 @@ export default {
   data() {
     return {
       debugMode: false,
-      points: parseInt(localStorage.points) || 0,
-      pointsAvailable: parseInt(localStorage.points) > 0 || false,
+      points: (localStorage.points) ? parseInt(localStorage.points) : 6,
+      pointsAvailable: (localStorage.points) ? parseInt(localStorage.points) > 0 : true,
       experience: parseInt(localStorage.experience) || 0,
       job: localStorage.job || 'Jobless',
       playerClass: localStorage.getItem('playerClass') || 'None',
@@ -677,6 +679,7 @@ export default {
         return;
       }
       localStorage.setItem('points', newPoints);
+      console.log(newPoints);
 
       this.pointsAvailable = newPoints > 0;
     },

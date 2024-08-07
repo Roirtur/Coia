@@ -1,6 +1,14 @@
 <template>
-    <textarea class="inventory text-field" v-model="inventory">
-    </textarea>
+    <div class="inventory-holder">
+        <div class="inventory">
+            <p class="inventory-title"> Inventory </p>
+            <textarea class="text-field full-size" v-model="inventory" />
+        </div>
+        <div class="inventory-irl">
+            <p class="inventory-title"> Equiped stuff </p>
+            <textarea class="text-field full-size" v-model="inventoryIRL" />
+        </div>
+    </div>
     <div class="kades-container">
         <span>Kades:</span>
         <span class="kades" :class="kades < 0 ? 'red' : ''">{{ kades }}</span>
@@ -18,13 +26,17 @@ export default {
     data() {
         return {
             inventory: localStorage.getItem("playerInventory") || '',
+            inventoryIRL: localStorage.getItem("playerInventoryIRL") || '',
             kades: +(localStorage.getItem("kades") || 0),
             dynamicKades: ""
         }
     },
     watch: {
-        inventory (inventory)  {
+        inventory(inventory) {
             localStorage.setItem("playerInventory", inventory);
+        },
+        inventoryIRL(inventoryIRL) {
+            localStorage.setItem("playerInventoryIRL", inventoryIRL);
         },
         kades(kades) {
             localStorage.setItem("kades", kades);
@@ -44,20 +56,49 @@ export default {
 </script>
 
 <style scoped>
-
-.text-field[type=number]::-webkit-inner-spin-button, 
-.text-field[type=number]::-webkit-outer-spin-button { 
+.text-field[type=number]::-webkit-inner-spin-button,
+.text-field[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    margin: 0; 
+    margin: 0;
 }
 
+.inventory-title {
+    font-size: 1.2em;
+    font-family: recharge;
+    text-align: center;
+    color: #e7972e;
+    position: absolute;
+    top: -8%;
+    left: 50%;
+    transform: translateX(-50%);
+}
 
-.inventory {
+.inventory-holder {
     width: calc(90% - 60px);
     padding: 30px;
     height: 80%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.inventory {
+    width: 70%;
+    height: 100%;
+    position: relative;
+}
+
+.inventory-irl {
+    width: 30%;
+    height: 100%;
+    position: relative;
+}
+
+.full-size {
+    width: 100%;
+    height: 100%;
 }
 
 .text-field {
