@@ -61,7 +61,7 @@ export default {
                 this.result += 2
                 this.ultraSuccess++
             } else {
-                this.result--
+                this.result -= 0.75
             }
 
             this.stillRolling--
@@ -72,6 +72,7 @@ export default {
             this.$emit('close');
         },
         returnResult() {
+
             this.$emit('result', this.result)
         },
         recalculateDices () {
@@ -85,6 +86,7 @@ export default {
         stillRolling(value) {
             if (value === 0) {
                 this.showResult = true
+                this.result = Math.round(this.result)
                 this.returnResult()
             }
         },
